@@ -13,6 +13,7 @@ import java.lang.*;
 
 public class FrameEngine {
     static Graphics g;
+    static int width = 500, height = 500;
     static ArrayList<GameObject> objects;
     static GameObject player;
     static int playerSpeed;
