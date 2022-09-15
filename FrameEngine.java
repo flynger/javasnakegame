@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -7,21 +8,27 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.lang.*;
+
 
 public class FrameEngine {
-    static int x, y = 0;
     static Graphics g;
-    static int width = 400, height = 400;
     static ArrayList<GameObject> objects;
     static GameObject player;
+    static int playerSpeed;
+
 
     public static void main(String[] args) {
         // create a DrawingPanel object
         DrawingPanel panel = new DrawingPanel(width, height);
 
+        // sets player's speed
+        playerSpeed = 4;
+
         // set up game objects
         objects = new ArrayList<GameObject>();
-        objects.add(player = new GameObject(200, 200, 20, 20, Color.RED));
+        objects.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
+
 
         // set up listeners
         KeyListener listener = new KeyListener() {
@@ -31,14 +38,17 @@ public class FrameEngine {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_W) {
-                    player.setSpeed(new Vector(0, -4));
-                } if (e.getKeyCode() == KeyEvent.VK_S) {
-                    player.setSpeed(new Vector(0, 4));
-                } if (e.getKeyCode() == KeyEvent.VK_A) {
-                    player.setSpeed(new Vector(-4, 0));
-                } if (e.getKeyCode() == KeyEvent.VK_D) {
-                    player.setSpeed(new Vector(4, 0));
+                if (e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
+                    player.setSpeed(new Vector(0, -playerSpeed));
+                }
+                if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                    player.setSpeed(new Vector(0, playerSpeed));
+                }
+                if (e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                    player.setSpeed(new Vector(-playerSpeed, 0));
+                }
+                if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
+                    player.setSpeed(new Vector(playerSpeed, 0));
                 }
                 //System.out.println("keyPressed=" + KeyEvent.getKeyText(e.getKeyCode()));
             }
@@ -60,17 +70,26 @@ public class FrameEngine {
     }
 
     public static void frame() {
-        // reset the background
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, width, height);
+        // reset the background and stops the removal of "You Lose"
+        if(!player.outOfBounds()) {
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, width, height);
+        }
+        else {
+            g.setFont(new Font("SansSerif", Font.BOLD, 36));
+            g.drawString("You Lose!", 200, 250);
+        }
 
         // draw the objects
         for (GameObject object : objects) {
+            if(object.outOfBounds()) {
+                player.setSpeed(new Vector(0,0));
+                break;
+            }
             g.setColor(object.getColor());
             object.move(object.getSpeed());
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
         }
-
         // movement
 //
 //        x++;
@@ -80,12 +99,16 @@ public class FrameEngine {
     }
 }
 
-class Vector {
+class Vector{
     public int x, y;
 
     public Vector(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public boolean equals(Vector other) {
+        return this.x == other.x && this.y == other.y;
     }
 }
 
@@ -171,5 +194,21 @@ class GameObject {
 
     public void setSpeed(Vector speed) {
         this.speed = speed;
+    }
+
+    public boolean equalsSpeed(Vector other) {
+        return other.equals(this.speed);
+    }
+
+    public boolean outOfBounds() {
+        if(this.pos.x > FrameEngine.width || this.pos.x < 0) {
+            return true;
+        }
+        else if (this.pos.y > FrameEngine.height || this.pos.y < 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
