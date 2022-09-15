@@ -17,6 +17,7 @@ public class FrameEngine {
     static ArrayList<GameObject> objects;
     static GameObject player;
     static int playerSpeed;
+    static int lastInput;
 
 
     public static void main(String[] args) {
@@ -39,17 +40,23 @@ public class FrameEngine {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
-                    player.setSpeed(new Vector(0, -playerSpeed));
-                }
-                if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
-                    player.setSpeed(new Vector(0, playerSpeed));
-                }
-                if (e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
-                    player.setSpeed(new Vector(-playerSpeed, 0));
-                }
-                if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
-                    player.setSpeed(new Vector(playerSpeed, 0));
+                if (lastInput == -1) {
+                    if (e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
+                        lastInput = KeyEvent.VK_W;
+                        //player.setSpeed(new Vector(0, -playerSpeed));
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                        lastInput = KeyEvent.VK_S;
+                        //player.setSpeed(new Vector(0, playerSpeed));
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                        lastInput = KeyEvent.VK_A;
+                        //player.setSpeed(new Vector(-playerSpeed, 0));
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
+                        lastInput = KeyEvent.VK_D;
+                        //player.setSpeed(new Vector(playerSpeed, 0));
+                    }
                 }
                 //System.out.println("keyPressed=" + KeyEvent.getKeyText(e.getKeyCode()));
             }
@@ -67,7 +74,7 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(FrameEngine::frame, 0, 17, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(FrameEngine::frame, 0, 25, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
@@ -75,6 +82,12 @@ public class FrameEngine {
         if(!player.outOfBounds()) {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
+            g.setColor(Color.BLACK);
+            for(int x = 0; x < 5; x++) {
+                for(int y = 0; y < 5; y++) {
+                    g.drawRect(x * 100, y * 100, 100, 100);
+                }
+            }
         }
         else {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
@@ -90,6 +103,22 @@ public class FrameEngine {
             g.setColor(object.getColor());
             object.move(object.getSpeed());
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
+        }
+
+        if (lastInput != -1 && player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+            if (lastInput == KeyEvent.VK_W) {
+                player.setSpeed(new Vector(0, -playerSpeed));
+            }
+            if (lastInput == KeyEvent.VK_S) {
+                player.setSpeed(new Vector(0, playerSpeed));
+            }
+            if (lastInput == KeyEvent.VK_A) {
+                player.setSpeed(new Vector(-playerSpeed, 0));
+            }
+            if (lastInput == KeyEvent.VK_D) {
+                player.setSpeed(new Vector(playerSpeed, 0));
+            }
+            lastInput = -1;
         }
         // movement
 //
