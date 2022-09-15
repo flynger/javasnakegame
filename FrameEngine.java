@@ -29,7 +29,12 @@ public class FrameEngine {
 
         // set up game objects
         objects = new ArrayList<GameObject>();
+
+        // creates player snake
         objects.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
+//        objects.add(new GameObject(80,200,20,20, Color.GREEN));
+//        objects.add(new GameObject(60,200,20,20,Color.GREEN));
+
 
 
         // set up listeners
@@ -49,7 +54,7 @@ public class FrameEngine {
                         lastInput = KeyEvent.VK_S;
                         //player.setSpeed(new Vector(0, playerSpeed));
                     }
-                    if (e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                    if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
                         lastInput = KeyEvent.VK_A;
                         //player.setSpeed(new Vector(-playerSpeed, 0));
                     }
@@ -91,12 +96,12 @@ public class FrameEngine {
         }
         else {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            g.drawString("You Lose!", 200, 250);
+            g.drawString("You Lose!", 150, 250);
         }
 
         // draw the objects
         for (GameObject object : objects) {
-            if(object.outOfBounds()) {
+            if(player.outOfBounds()) {
                 player.setSpeed(new Vector(0,0));
                 break;
             }
@@ -105,7 +110,7 @@ public class FrameEngine {
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
         }
 
-        if (lastInput != -1 && player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+        if ((lastInput != -1) && player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             if (lastInput == KeyEvent.VK_W) {
                 player.setSpeed(new Vector(0, -playerSpeed));
             }
@@ -139,6 +144,10 @@ class Vector{
 
     public boolean equals(Vector other) {
         return this.x == other.x && this.y == other.y;
+    }
+
+    public String toString() {
+        return "x: " + x + ",y: " + y;
     }
 }
 
@@ -231,10 +240,10 @@ class GameObject {
     }
 
     public boolean outOfBounds() {
-        if(this.pos.x > FrameEngine.width || this.pos.x < 0) {
+        if(this.pos.x >= FrameEngine.width || this.pos.x < 0) {
             return true;
         }
-        else if (this.pos.y > FrameEngine.height || this.pos.y < 0) {
+        else if (this.pos.y >= FrameEngine.height || this.pos.y < 0) {
             return true;
         }
         else {
