@@ -14,7 +14,8 @@ import java.lang.*;
 public class FrameEngine {
     static Graphics g;
     static int width = 500, height = 500;
-    static ArrayList<GameObject> objects;
+    static ArrayList<GameObject> playerArray;
+    static ArrayList<Vector> playerCurrentSpeed;
     static GameObject player;
     static int playerSpeed;
     static int lastInput;
@@ -28,12 +29,12 @@ public class FrameEngine {
         playerSpeed = 4;
 
         // set up game objects
-        objects = new ArrayList<GameObject>();
+        playerArray = new ArrayList<GameObject>();
 
         // creates player snake
-        objects.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
-//        objects.add(new GameObject(80,200,20,20, Color.GREEN));
-//        objects.add(new GameObject(60,200,20,20,Color.GREEN));
+        playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
+        playerArray.add(new GameObject(80,200,20,20, Color.GREEN));
+        playerArray.add(new GameObject(60,200,20,20,Color.GREEN));
 
 
 
@@ -50,15 +51,15 @@ public class FrameEngine {
                         lastInput = KeyEvent.VK_W;
                         //player.setSpeed(new Vector(0, -playerSpeed));
                     }
-                    if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                    else if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
                         lastInput = KeyEvent.VK_S;
                         //player.setSpeed(new Vector(0, playerSpeed));
                     }
-                    if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                    else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
                         lastInput = KeyEvent.VK_A;
                         //player.setSpeed(new Vector(-playerSpeed, 0));
                     }
-                    if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
+                    else if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
                         lastInput = KeyEvent.VK_D;
                         //player.setSpeed(new Vector(playerSpeed, 0));
                     }
@@ -99,8 +100,8 @@ public class FrameEngine {
             g.drawString("You Lose!", 150, 250);
         }
 
-        // draw the objects
-        for (GameObject object : objects) {
+        // draw the player
+        for (GameObject object : playerArray) {
             if(player.outOfBounds()) {
                 player.setSpeed(new Vector(0,0));
                 break;
@@ -110,27 +111,31 @@ public class FrameEngine {
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
         }
 
-        if ((lastInput != -1) && player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+        if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             if (lastInput == KeyEvent.VK_W) {
                 player.setSpeed(new Vector(0, -playerSpeed));
+                playerCurrentSpeed.add(player.getSpeed());
             }
-            if (lastInput == KeyEvent.VK_S) {
+            else if (lastInput == KeyEvent.VK_S) {
                 player.setSpeed(new Vector(0, playerSpeed));
+                playerCurrentSpeed.add(player.getSpeed());
             }
-            if (lastInput == KeyEvent.VK_A) {
+            else if (lastInput == KeyEvent.VK_A) {
                 player.setSpeed(new Vector(-playerSpeed, 0));
+                playerCurrentSpeed.add(player.getSpeed());
             }
-            if (lastInput == KeyEvent.VK_D) {
+            else if (lastInput == KeyEvent.VK_D) {
                 player.setSpeed(new Vector(playerSpeed, 0));
+                playerCurrentSpeed.add(player.getSpeed());
+            }
+
+            // TODO: add this
+            for (GameObject object : playerArray) {
+                if(player != object) {
+                }
             }
             lastInput = -1;
         }
-        // movement
-//
-//        x++;
-//        y++;
-//        g.setColor(Color.BLACK);
-//        g.fillRect(x, y, 20, 20);
     }
 }
 
