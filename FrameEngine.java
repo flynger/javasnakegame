@@ -19,6 +19,9 @@ public class FrameEngine {
     static int playerSpeed;
     static int lastInput;
 
+    static Vector prevObjSpeed;
+
+    static boolean changeSpeed = false;
 
     public static void main(String[] args) {
         // create a DrawingPanel object
@@ -32,8 +35,8 @@ public class FrameEngine {
 
         // creates player snake
         objects.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
-//        objects.add(new GameObject(80,200,20,20, Color.GREEN));
-//        objects.add(new GameObject(60,200,20,20,Color.GREEN));
+        objects.add(new GameObject(80,200,20,20, Color.GREEN));
+        objects.add(new GameObject(60,200,20,20,Color.GREEN));
 
 
 
@@ -83,6 +86,10 @@ public class FrameEngine {
     }
 
     public static void frame() {
+
+        // TODO: Make the snake body code efficient
+        Vector currentObjSpeed;
+
         // reset the background and stops the removal of "You Lose"
         if(!player.outOfBounds()) {
             g.setColor(Color.WHITE);
@@ -105,12 +112,15 @@ public class FrameEngine {
                 player.setSpeed(new Vector(0,0));
                 break;
             }
+
+            
             g.setColor(object.getColor());
             object.move(object.getSpeed());
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
         }
+        changeSpeed = false;
 
-        if ((lastInput != -1) && player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+        if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             if (lastInput == KeyEvent.VK_W) {
                 player.setSpeed(new Vector(0, -playerSpeed));
             }
@@ -122,6 +132,9 @@ public class FrameEngine {
             }
             if (lastInput == KeyEvent.VK_D) {
                 player.setSpeed(new Vector(playerSpeed, 0));
+            }
+            for (GameObject object : objects) {
+
             }
             lastInput = -1;
         }
