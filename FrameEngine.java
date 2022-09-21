@@ -37,11 +37,11 @@ public class FrameEngine {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (lastInput == -1) {
-                    if (e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
+                    if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
                         lastInput = KeyEvent.VK_W;
                         //player.setSpeed(new Vector(0, -playerSpeed));
                     }
-                    else if (e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                    else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
                         lastInput = KeyEvent.VK_S;
                         //player.setSpeed(new Vector(0, playerSpeed));
                     }
