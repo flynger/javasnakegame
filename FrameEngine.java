@@ -18,7 +18,7 @@ public class FrameEngine {
     static GameObject player;
     static int playerSpeed = 4;
     static int lastInput;
-
+    static boolean death = false;
     public static void main(String[] args) {
         // create a DrawingPanel object
         DrawingPanel panel = new DrawingPanel(width, height);
@@ -75,7 +75,7 @@ public class FrameEngine {
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
-        if(!player.outOfBounds()) {
+        if(!death) {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
             g.setColor(Color.BLACK);
@@ -94,6 +94,7 @@ public class FrameEngine {
         for (GameObject object : playerArray) {
             if(player.outOfBounds()) {
                 player.setSpeed(new Vector(0,0));
+                death = true;
                 break;
             }
             g.setColor(object.getColor());
