@@ -14,29 +14,19 @@ import java.lang.*;
 public class FrameEngine {
     static Graphics g;
     static int width = 500, height = 500;
-    static ArrayList<GameObject> playerArray;
-    static ArrayList<Vector> playerCurrentSpeed;
+    static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed;
+    static int playerSpeed = 4;
     static int lastInput;
-
 
     public static void main(String[] args) {
         // create a DrawingPanel object
         DrawingPanel panel = new DrawingPanel(width, height);
 
-        // sets player's speed
-        playerSpeed = 4;
-
-        // set up game objects
-        playerArray = new ArrayList<GameObject>();
-
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(80,200,20,20, Color.GREEN));
         playerArray.add(new GameObject(60,200,20,20,Color.GREEN));
-
-
 
         // set up listeners
         KeyListener listener = new KeyListener() {
@@ -112,27 +102,27 @@ public class FrameEngine {
         }
 
         if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+            Vector lastObjectSpeed = new Vector(0, 0);
             if (lastInput == KeyEvent.VK_W) {
-                player.setSpeed(new Vector(0, -playerSpeed));
-                playerCurrentSpeed.add(player.getSpeed());
+                lastObjectSpeed = new Vector(0, -playerSpeed);
             }
             else if (lastInput == KeyEvent.VK_S) {
-                player.setSpeed(new Vector(0, playerSpeed));
-                playerCurrentSpeed.add(player.getSpeed());
+                lastObjectSpeed = new Vector(0, playerSpeed);
             }
             else if (lastInput == KeyEvent.VK_A) {
-                player.setSpeed(new Vector(-playerSpeed, 0));
-                playerCurrentSpeed.add(player.getSpeed());
+                lastObjectSpeed = new Vector(-playerSpeed, 0);
             }
             else if (lastInput == KeyEvent.VK_D) {
-                player.setSpeed(new Vector(playerSpeed, 0));
-                playerCurrentSpeed.add(player.getSpeed());
+                lastObjectSpeed = new Vector(playerSpeed, 0);
             }
 
-            // TODO: add this
             for (GameObject object : playerArray) {
-                if(player != object) {
+                if (lastObjectSpeed.equals(new Vector(0, 0))) {
+                    lastObjectSpeed = player.getSpeed();
                 }
+                Vector nextSpeed = object.getSpeed();
+                object.setSpeed(lastObjectSpeed);
+                lastObjectSpeed = nextSpeed;
             }
             lastInput = -1;
         }
