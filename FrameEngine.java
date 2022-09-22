@@ -107,6 +107,7 @@ public class FrameEngine {
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
         }
 
+        // update the player's speed
         if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             Vector lastObjectSpeed = new Vector(0, 0);
             if (lastInput == KeyEvent.VK_W) {
@@ -135,7 +136,7 @@ public class FrameEngine {
     }
 }
 
-class Vector{
+class Vector {
     public int x, y;
 
     public Vector(int x, int y) {
