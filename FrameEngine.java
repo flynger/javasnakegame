@@ -17,17 +17,22 @@ public class FrameEngine {
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed = 4;
+    static int playerSpeed = 20;
     static int lastInput;
     static boolean death = false;
     public static void main(String[] args) {
         // create a DrawingPanel object
-        DrawingPanel panel = new DrawingPanel(width, height);
+        JFrame panel = new JFrame("Snake");
+        panel.setSize(500, 500);
+        panel.setVisible(true);
+        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(80,200,20,20, Color.GREEN));
         playerArray.add(new GameObject(60,200,20,20,Color.GREEN));
+        playerArray.add(new GameObject(40,200,20,20,Color.GREEN));
+        playerArray.add(new GameObject(20,200,20,20,Color.GREEN));
 
         for(GameObject object : playerArray) {
             objects.add(object);
@@ -75,7 +80,7 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(FrameEngine::frame, 0, 25, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(FrameEngine::frame, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
@@ -89,6 +94,7 @@ public class FrameEngine {
                     g.drawRect(x * 100, y * 100, 100, 100);
                 }
             }
+            player.isTouching(playerArray.get(2));
         }
         else {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
@@ -239,6 +245,14 @@ class GameObject {
 
     public boolean equalsSpeed(Vector other) {
         return other.equals(this.speed);
+    }
+
+    public boolean isTouching(GameObject other) {
+        if (this.getX() > other.getX() && this.getX() < other.getX() + other.getWidth() & this.getY() > other.getY() && this.getY() < other.getY() + other.getHeight()) {
+            System.out.println("Touching!");
+            return true;
+        }
+        return false;
     }
 
     public boolean outOfBounds() {
