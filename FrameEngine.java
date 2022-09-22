@@ -15,6 +15,7 @@ public class FrameEngine {
     static Graphics g;
     static int width = 500, height = 500;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
+    static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
     static int playerSpeed = 4;
     static int lastInput;
@@ -27,6 +28,10 @@ public class FrameEngine {
         playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(80,200,20,20, Color.GREEN));
         playerArray.add(new GameObject(60,200,20,20,Color.GREEN));
+
+        for(GameObject object : playerArray) {
+            objects.add(object);
+        }
 
         // set up listeners
         KeyListener listener = new KeyListener() {
