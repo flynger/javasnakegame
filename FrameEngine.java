@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.lang.*;
+import java.util.random.*;
 
 
 public class FrameEngine {
@@ -23,7 +24,7 @@ public class FrameEngine {
     public static void main(String[] args) {
         // create a DrawingPanel object
         JFrame panel = new JFrame("Snake");
-        panel.setSize(500, 500);
+        panel.setSize(width, height);
         panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -34,9 +35,8 @@ public class FrameEngine {
         playerArray.add(new GameObject(40,200,20,20,Color.GREEN));
         playerArray.add(new GameObject(20,200,20,20,Color.GREEN));
 
-        for(GameObject object : playerArray) {
-            objects.add(object);
-        }
+        objects.addAll(playerArray);
+        objects.add(Apple.getApple());
 
         // set up listeners
         KeyListener listener = new KeyListener() {
@@ -102,7 +102,7 @@ public class FrameEngine {
         }
 
         // draw the player
-        for (GameObject object : playerArray) {
+        for (GameObject object : objects) {
             if(player.outOfBounds()) {
                 player.setSpeed(new Vector(0,0));
                 death = true;
@@ -111,6 +111,10 @@ public class FrameEngine {
             g.setColor(object.getColor());
             object.move(object.getSpeed());
             g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
+        }
+        // TODO: Checks if the player's head is touching to add to the snake's length
+        if(player.isTouching(Apple.getApple())) {
+            playerArray.add(new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20));
         }
 
         // update the player's speed
@@ -244,7 +248,7 @@ class GameObject {
     }
 
     public boolean equalsSpeed(Vector other) {
-        return other.equals(this.speed);
+        return this.speed.equals(other);
     }
 
     public boolean isTouching(GameObject other) {
@@ -265,5 +269,20 @@ class GameObject {
         else {
             return false;
         }
+    }
+}
+
+class Apple extends GameObject {
+
+    private static Apple single_instance = null;
+    private Apple(int x, int y, int w, int h) {
+        super(x, y, w, h, Color.RED);
+    }
+    public static Apple getApple()
+    {
+        if (single_instance == null)
+            single_instance = new Apple(380, 200, 20, 20);
+
+        return single_instance;
     }
 }
