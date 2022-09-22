@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +11,7 @@ import java.lang.*;
 
 
 public class FrameEngine {
-    static Graphics g;
+    static Graphics2D g;
     static int width = 500, height = 500;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
@@ -20,21 +19,22 @@ public class FrameEngine {
     static int playerSpeed = 20;
     static int lastInput;
     static boolean death = false;
+
     public static void main(String[] args) {
         // create a DrawingPanel object
+//        DrawingPanel panel = new DrawingPanel();
         JFrame panel = new JFrame("Snake");
-        panel.setSize(500, 500);
+        panel.setSize(new Dimension(width, height));
+        panel.setLocation(710, 290);
         panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
-        playerArray.add(new GameObject(80,200,20,20, Color.GREEN));
-        playerArray.add(new GameObject(60,200,20,20,Color.GREEN));
-        playerArray.add(new GameObject(40,200,20,20,Color.GREEN));
-        playerArray.add(new GameObject(20,200,20,20,Color.GREEN));
+        playerArray.add(new GameObject(80, 200, 20, 20, Color.GREEN));
+        playerArray.add(new GameObject(60, 200, 20, 20, Color.GREEN));
 
-        for(GameObject object : playerArray) {
+        for (GameObject object : playerArray) {
             objects.add(object);
         }
 
@@ -50,16 +50,13 @@ public class FrameEngine {
                     if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
                         lastInput = KeyEvent.VK_W;
                         //player.setSpeed(new Vector(0, -playerSpeed));
-                    }
-                    else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                    } else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
                         lastInput = KeyEvent.VK_S;
                         //player.setSpeed(new Vector(0, playerSpeed));
-                    }
-                    else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                    } else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
                         lastInput = KeyEvent.VK_A;
                         //player.setSpeed(new Vector(-playerSpeed, 0));
-                    }
-                    else if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
                         lastInput = KeyEvent.VK_D;
                         //player.setSpeed(new Vector(playerSpeed, 0));
                     }
@@ -76,7 +73,7 @@ public class FrameEngine {
         panel.setVisible(true);
 
         // get the Graphics object from the DrawingPanel
-        g = panel.getGraphics();
+        g = (Graphics2D) panel.getGraphics();
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -85,51 +82,43 @@ public class FrameEngine {
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
-        if(!death) {
+        if (death) {
+            g.setFont(new Font("SansSerif", Font.BOLD, 36));
+            g.drawString("You Lose!", 150, 250);
+        } else {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
             g.setColor(Color.BLACK);
-            for(int x = 0; x < 5; x++) {
-                for(int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                for (int y = 0; y < 5; y++) {
                     g.drawRect(x * 100, y * 100, 100, 100);
                 }
             }
-            player.isTouching(playerArray.get(2));
-        }
-        else {
-            g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            g.drawString("You Lose!", 150, 250);
-        }
 
-        // draw the player
-        for (GameObject object : playerArray) {
-            if(player.outOfBounds()) {
-                player.setSpeed(new Vector(0,0));
-                death = true;
-                break;
+            // draw all the objects
+            for (GameObject object : objects) {
+                g.setColor(object.getColor());
+                object.move(object.getSpeed());
+                g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
             }
-            g.setColor(object.getColor());
-            object.move(object.getSpeed());
-            g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
-        }
 
-        // update the player's speed
-        if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+            // update the player's speed
+            //if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             Vector lastObjectSpeed = new Vector(0, 0);
             if (lastInput == KeyEvent.VK_W) {
                 lastObjectSpeed = new Vector(0, -playerSpeed);
-            }
-            else if (lastInput == KeyEvent.VK_S) {
+            } else if (lastInput == KeyEvent.VK_S) {
                 lastObjectSpeed = new Vector(0, playerSpeed);
-            }
-            else if (lastInput == KeyEvent.VK_A) {
+            } else if (lastInput == KeyEvent.VK_A) {
                 lastObjectSpeed = new Vector(-playerSpeed, 0);
-            }
-            else if (lastInput == KeyEvent.VK_D) {
+            } else if (lastInput == KeyEvent.VK_D) {
                 lastObjectSpeed = new Vector(playerSpeed, 0);
             }
 
             for (GameObject object : playerArray) {
+                if (object != player && player.isTouching(object)) {
+                    death = true;
+                }
                 if (lastObjectSpeed.equals(new Vector(0, 0))) {
                     lastObjectSpeed = player.getSpeed();
                 }
@@ -138,6 +127,12 @@ public class FrameEngine {
                 lastObjectSpeed = nextSpeed;
             }
             lastInput = -1;
+            //}
+
+            // check out of bounds
+            if (player.outOfBounds()) {
+                death = true;
+            }
         }
     }
 }
@@ -183,6 +178,10 @@ class GameObject {
 
     public int getY() {
         return this.pos.y;
+    }
+
+    public Vector getPos() {
+        return this.pos;
     }
 
     public void setX(int x) {
@@ -248,12 +247,16 @@ class GameObject {
     }
 
     public boolean isTouching(GameObject other) {
-        if (this.getX() > other.getX() && this.getX() < other.getX() + other.getWidth() & this.getY() > other.getY() && this.getY() < other.getY() + other.getHeight()) {
-            System.out.println("Touching!");
-            return true;
-        }
-        return false;
+        return this.pos.equals(other.getPos());
     }
+
+//    public boolean isTouching(GameObject other) {
+//        int leftX = this.getX(), rightX = this.getX() + getWidth();
+//        int otherLeftX = other.getX(), otherRightX = other.getX() + other.getWidth();
+//        int upY = this.getY(), downY = this.getY() + getHeight();
+//        int otherUpY = other.getY(), otherDownY = other.getY() + other.getHeight();
+//        return ((rightX > otherLeftX && rightX <= otherRightX)||(leftX < otherRightX && leftX >= otherLeftX)) && ((downY > otherUpY && downY <= otherDownY)||(upY < otherDownY && upY >= otherUpY));
+//    }
 
     public boolean outOfBounds() {
         if(this.pos.x >= FrameEngine.width || this.pos.x < 0) {
@@ -262,8 +265,6 @@ class GameObject {
         else if (this.pos.y >= FrameEngine.height || this.pos.y < 0) {
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 }
