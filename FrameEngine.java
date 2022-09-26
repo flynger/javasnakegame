@@ -101,11 +101,6 @@ public class FrameEngine {
                 g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
             }
 
-            // TODO: Checks if the player's head is touching to add to the snake's length
-            if (player.isTouching(Apple.getApple())) {
-                playerArray.add(new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20));
-            }
-
             // update the player's speed
             // if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
             Vector lastObjectSpeed = new Vector(0, 0);
@@ -132,6 +127,11 @@ public class FrameEngine {
             }
             lastInput = -1;
             // }
+            if (player.isTouching(Apple.getApple())) {
+                GameObject box;
+                playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
+                objects.add(box);
+            }
 
             // check out of bounds
             if (player.outOfBounds()) {
