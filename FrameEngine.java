@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -131,6 +132,7 @@ public class FrameEngine {
                 GameObject box;
                 playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
                 objects.add(box);
+                Apple.getApple().randomizePosition();
             }
 
             // check out of bounds
@@ -199,6 +201,10 @@ class GameObject {
     public void setPos(int x, int y) {
         this.pos.x = x;
         this.pos.y = y;
+    }
+
+    public void setPos(Vector pos) {
+        this.pos = pos;
     }
 
     public int getWidth() {
@@ -280,6 +286,23 @@ class Apple extends GameObject {
 
     private Apple(int x, int y, int w, int h) {
         super(x, y, w, h, Color.RED);
+    }
+
+    public Vector getRandomPos() {
+        return new Vector((int) (Math.random()*(FrameEngine.width/getApple().getWidth())), (int) (Math.random()*(FrameEngine.height/getApple().getHeight())));
+    }
+
+    public void randomizePosition() {
+        int i = 0;
+        Vector randomPos = getRandomPos();
+        while (i < FrameEngine.playerArray.size()) {
+            if (FrameEngine.playerArray.get(i).getPos().equals(randomPos)) {
+                randomPos = getRandomPos();
+                i = -1;
+            }
+            i++;
+        }
+        super.setPos(randomPos);
     }
 
     public static Apple getApple() {
