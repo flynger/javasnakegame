@@ -1,0 +1,7 @@
+
+*.class
+*.class
+out/production/javasnakegame/FrameEngine$1.class
+out/production/javasnakegame/FrameEngine.class
+out/production/javasnakegame/GameObject.class
+out/production/javasnakegame/Vector.class
