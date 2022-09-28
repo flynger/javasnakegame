@@ -23,12 +23,12 @@ public class FrameEngine {
 
     public static void main(String[] args) {
         // create a DrawingPanel object
-        // DrawingPanel panel = new DrawingPanel();
-        JFrame panel = new JFrame("Snake");
-        panel.setSize(new Dimension(width, height));
-        panel.setLocation(710, 290);
-        panel.setVisible(true);
-        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        DrawingPanel panel = new DrawingPanel(width, height);
+//        JFrame panel = new JFrame("Snake");
+//        panel.setSize(new Dimension(width, height));
+//        panel.setLocation(710, 290);
+//        panel.setVisible(true);
+//        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
@@ -88,12 +88,12 @@ public class FrameEngine {
         } else {
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, width, height);
-            g.setColor(Color.BLACK);
-            for (int x = 0; x < 5; x++) {
-                for (int y = 0; y < 5; y++) {
-                    g.drawRect(x * 100, y * 100, 100, 100);
-                }
-            }
+//            g.setColor(Color.BLACK);
+//            for (int x = 0; x < 5; x++) {
+//                for (int y = 0; y < 5; y++) {
+//                    g.drawRect(x * 100, y * 100, 100, 100);
+//                }
+//            }
 
             // draw all the objects
             for (GameObject object : objects) {
