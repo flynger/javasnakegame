@@ -19,8 +19,7 @@ public class FrameEngine {
     static GameObject player;
     static int playerSpeed = 20;
     static int lastInput;
-    static boolean death = false;
-
+    static boolean death;
     public static void main(String[] args) {
         // create a DrawingPanel object
         DrawingPanel panel = new DrawingPanel(width, height);
@@ -77,11 +76,48 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(FrameEngine::frame, 0, 100, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 100, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
+        // update the player's speed
+        // if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+        Vector lastObjectSpeed = new Vector(0, 0);
+        if (lastInput == KeyEvent.VK_W) {
+            lastObjectSpeed = new Vector(0, -playerSpeed);
+        } else if (lastInput == KeyEvent.VK_S) {
+            lastObjectSpeed = new Vector(0, playerSpeed);
+        } else if (lastInput == KeyEvent.VK_A) {
+            lastObjectSpeed = new Vector(-playerSpeed, 0);
+        } else if (lastInput == KeyEvent.VK_D) {
+            lastObjectSpeed = new Vector(playerSpeed, 0);
+        }
+        lastInput = -1;
+
+        for (GameObject object : playerArray) {
+            if (object != player && player.isTouching(object)) {
+                death = true;
+            }
+            if (lastObjectSpeed.equals(new Vector(0, 0))) {
+                lastObjectSpeed = player.getSpeed();
+            }
+            Vector nextSpeed = object.getSpeed();
+            object.setSpeed(lastObjectSpeed);
+            lastObjectSpeed = nextSpeed;
+        }
+
+        if (player.outOfBounds()) {
+            death = true;
+        }
+
+        // }
+        if (player.isTouching(Apple.getApple())) {
+            GameObject box;
+            playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
+            objects.add(box);
+            Apple.getApple().randomizePosition();
+        }
         if (death) {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
             g.drawString("You Lose!", 150, 250);
@@ -102,43 +138,7 @@ public class FrameEngine {
                 g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
             }
 
-            // update the player's speed
-            // if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
-            Vector lastObjectSpeed = new Vector(0, 0);
-            if (lastInput == KeyEvent.VK_W) {
-                lastObjectSpeed = new Vector(0, -playerSpeed);
-            } else if (lastInput == KeyEvent.VK_S) {
-                lastObjectSpeed = new Vector(0, playerSpeed);
-            } else if (lastInput == KeyEvent.VK_A) {
-                lastObjectSpeed = new Vector(-playerSpeed, 0);
-            } else if (lastInput == KeyEvent.VK_D) {
-                lastObjectSpeed = new Vector(playerSpeed, 0);
-            }
 
-            for (GameObject object : playerArray) {
-                if (object != player && player.isTouching(object)) {
-                    death = true;
-                }
-                if (lastObjectSpeed.equals(new Vector(0, 0))) {
-                    lastObjectSpeed = player.getSpeed();
-                }
-                Vector nextSpeed = object.getSpeed();
-                object.setSpeed(lastObjectSpeed);
-                lastObjectSpeed = nextSpeed;
-            }
-            lastInput = -1;
-            // }
-            if (player.isTouching(Apple.getApple())) {
-                GameObject box;
-                playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
-                objects.add(box);
-                Apple.getApple().randomizePosition();
-            }
-
-            // check out of bounds
-            if (player.outOfBounds()) {
-                death = true;
-            }
         }
     }
 }
@@ -271,9 +271,9 @@ class GameObject {
     // }
 
     public boolean outOfBounds() {
-        if (this.pos.x >= FrameEngine.width || this.pos.x < 0) {
+        if ((this.pos.x == FrameEngine.width - getWidth() && this.getSpeed().x > 0) || (this.pos.x == 0 && this.getSpeed().x < 0)) {
             return true;
-        } else if (this.pos.y >= FrameEngine.height || this.pos.y < 0) {
+        } else if ((this.pos.y == FrameEngine.height - getHeight() && this.getSpeed().y > 0) || (this.pos.y == 0 && this.getSpeed().y < 0)) {
             return true;
         }
         return false;
