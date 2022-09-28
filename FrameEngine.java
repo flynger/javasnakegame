@@ -35,8 +35,8 @@ public class FrameEngine {
         playerArray.add(new GameObject(80, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(60, 200, 20, 20, Color.GREEN));
 
-        objects.addAll(playerArray);
         objects.add(Apple.getApple());
+        objects.addAll(playerArray);
 
         // set up listeners
         KeyListener listener = new KeyListener() {
