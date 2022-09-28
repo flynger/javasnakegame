@@ -38,9 +38,9 @@ public class FrameEngine {
         playerArray.add(new GameObject(80, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(60, 200, 20, 20, Color.GREEN));
 
-        player2Array.add(player2 = new GameObject(400, 200, 20, 20, Color.CYAN));
+        player2Array.add(player2 = new GameObject(380, 200, 20, 20, Color.CYAN));
+        player2Array.add(new GameObject(400, 200, 20, 20, Color.CYAN));
         player2Array.add(new GameObject(420, 200, 20, 20, Color.CYAN));
-        player2Array.add(new GameObject(440, 200, 20, 20, Color.CYAN));
 
         objects.add(Apple.getApple());
         objects.addAll(playerArray);
