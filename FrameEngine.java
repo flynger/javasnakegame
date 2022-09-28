@@ -289,7 +289,7 @@ class Apple extends GameObject {
     }
 
     public Vector getRandomPos() {
-        return new Vector((int) (Math.random()*(FrameEngine.width/getApple().getWidth())), (int) (Math.random()*(FrameEngine.height/getApple().getHeight())));
+        return new Vector((int) (Math.random()*(FrameEngine.width/getApple().getWidth())) * getApple().getWidth(), (int) (Math.random()*(FrameEngine.height/getApple().getHeight())) * getApple().getHeight());
     }
 
     public void randomizePosition() {
