@@ -25,7 +25,7 @@ public class FrameEngine {
         // create a DrawingPanel object
 //        DrawingPanel panel = new DrawingPanel(width, height);
         JFrame panel = new JFrame("Snake");
-        panel.setSize(new Dimension(width, height));
+        panel.setSize(new Dimension(width + 16, height + 38));
         panel.setLocation(710, 290);
         panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,7 +83,7 @@ public class FrameEngine {
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
         g.setColor(Color.WHITE);
-        g.fillRect(playerArray.get(playerArray.size()-1).getPos().x, playerArray.get(playerArray.size()-1).getPos().y, 20, 20);
+        g.fillRect(playerArray.get(playerArray.size()-1).getPos().x + 8, playerArray.get(playerArray.size()-1).getPos().y + 30, 20, 20);
 
         // update the player's speed
          if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
@@ -132,7 +132,7 @@ public class FrameEngine {
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
                 object.move(object.getSpeed());
-                g.fillRect(object.getX(), object.getY(), object.getWidth(), object.getHeight());
+                g.fillRect(object.getX() + 8, object.getY() + 30, object.getWidth(), object.getHeight());
             }
 
 
