@@ -13,15 +13,15 @@ import java.util.random.*;
 public class FrameEngine {
     static JFrame panel;
     static Graphics g;
-    static int cellSize = 20;
-    static int width = 25 * cellSize;
-    static int height = 25 * cellSize;
-    static int xOffset = 8;
-    static int yOffset = 30;
+    static final int cellSize = 20;
+    static final int width = 25 * cellSize;
+    static final int height = 25 * cellSize;
+    static final int xOffset = 8;
+    static final int yOffset = 30;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed = cellSize / 10;
+    static final int playerSpeed = cellSize / 10;
     static int lastInput;
     static boolean death;
     public static void main(String[] args) {
@@ -36,34 +36,30 @@ public class FrameEngine {
         KeyListener listener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
+
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 if (!death && lastInput == -1) {
-                    if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
+                    if (e.getKeyCode() == KeyEvent.VK_W && player.getSpeed().x != 0) {
                         lastInput = KeyEvent.VK_W;
-                        // player.setSpeed(new Vector(0, -playerSpeed));
-                    } else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_S && !player.equalsSpeed(new Vector(0, -playerSpeed))) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_S && player.getSpeed().x != 0) {
                         lastInput = KeyEvent.VK_S;
-                        // player.setSpeed(new Vector(0, playerSpeed));
-                    } else if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_A && !player.equalsSpeed(new Vector(playerSpeed, 0))) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_A && player.getSpeed().y != 0) {
                         lastInput = KeyEvent.VK_A;
-                        // player.setSpeed(new Vector(-playerSpeed, 0));
-                    } else if (e.getKeyCode() == KeyEvent.VK_D && !player.equalsSpeed(new Vector(-playerSpeed, 0))) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_D && (player.getSpeed().y != 0 || player.equalsSpeed(new Vector(0, 0)))) {
                         lastInput = KeyEvent.VK_D;
-                        // player.setSpeed(new Vector(playerSpeed, 0));
                     }
                 }
                 else if (death && e.getKeyCode() == KeyEvent.VK_ENTER) {
                     restartGame();
                 }
-                // System.out.println("keyPressed=" + KeyEvent.getKeyText(e.getKeyCode()));
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                // System.out.println("keyReleased=" + KeyEvent.getKeyText(e.getKeyCode()));
+
             }
         };
         panel.addKeyListener(listener);
