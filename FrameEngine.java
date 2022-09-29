@@ -23,12 +23,12 @@ public class FrameEngine {
     static boolean death;
     public static void main(String[] args) {
         // create a DrawingPanel object
-        DrawingPanel panel = new DrawingPanel(width, height);
-//        JFrame panel = new JFrame("Snake");
-//        panel.setSize(new Dimension(width, height));
-//        panel.setLocation(710, 290);
-//        panel.setVisible(true);
-//        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        DrawingPanel panel = new DrawingPanel(width, height);
+        JFrame panel = new JFrame("Snake");
+        panel.setSize(new Dimension(width, height));
+        panel.setLocation(710, 290);
+        panel.setVisible(true);
+        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, new Color(0, 220, 0)));
