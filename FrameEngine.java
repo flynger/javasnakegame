@@ -17,7 +17,7 @@ public class FrameEngine {
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed = 20;
+    static int playerSpeed = 4;
     static int lastInput;
     static boolean death;
     public static void main(String[] args) {
@@ -76,48 +76,49 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 100, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 20, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
         // update the player's speed
-        // if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
-        Vector lastObjectSpeed = new Vector(0, 0);
-        if (lastInput == KeyEvent.VK_W) {
-            lastObjectSpeed = new Vector(0, -playerSpeed);
-        } else if (lastInput == KeyEvent.VK_S) {
-            lastObjectSpeed = new Vector(0, playerSpeed);
-        } else if (lastInput == KeyEvent.VK_A) {
-            lastObjectSpeed = new Vector(-playerSpeed, 0);
-        } else if (lastInput == KeyEvent.VK_D) {
-            lastObjectSpeed = new Vector(playerSpeed, 0);
-        }
-        lastInput = -1;
+         if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
+             Vector lastObjectSpeed = new Vector(0, 0);
+             if (lastInput == KeyEvent.VK_W) {
+                 lastObjectSpeed = new Vector(0, -playerSpeed);
+             } else if (lastInput == KeyEvent.VK_S) {
+                 lastObjectSpeed = new Vector(0, playerSpeed);
+             } else if (lastInput == KeyEvent.VK_A) {
+                 lastObjectSpeed = new Vector(-playerSpeed, 0);
+             } else if (lastInput == KeyEvent.VK_D) {
+                 lastObjectSpeed = new Vector(playerSpeed, 0);
+             }
+             lastInput = -1;
 
-        for (GameObject object : playerArray) {
-            if (object != player && player.isTouching(object)) {
-                death = true;
-            }
-            if (lastObjectSpeed.equals(new Vector(0, 0))) {
-                lastObjectSpeed = player.getSpeed();
-            }
-            Vector nextSpeed = object.getSpeed();
-            object.setSpeed(lastObjectSpeed);
-            lastObjectSpeed = nextSpeed;
-        }
+             for (GameObject object : playerArray) {
+                 if (object != player && player.isTouching(object)) {
+                     death = true;
+                 }
+                 if (lastObjectSpeed.equals(new Vector(0, 0))) {
+                     lastObjectSpeed = player.getSpeed();
+                 }
+                 Vector nextSpeed = object.getSpeed();
+                 object.setSpeed(lastObjectSpeed);
+                 lastObjectSpeed = nextSpeed;
+             }
 
-        if (player.outOfBounds()) {
-            death = true;
-        }
+             if (player.outOfBounds()) {
+                 death = true;
+             }
 
-        // }
-        if (player.isTouching(Apple.getApple())) {
-            GameObject box;
-            playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
-            objects.add(box);
-            Apple.getApple().randomizePosition();
-        }
+             // }
+             if (player.isTouching(Apple.getApple())) {
+                 GameObject box;
+                 playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
+                 objects.add(box);
+                 Apple.getApple().randomizePosition();
+             }
+         }
         if (death) {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
             g.drawString("You Lose!", 150, 250);
