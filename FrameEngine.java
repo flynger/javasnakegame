@@ -151,14 +151,14 @@ public class FrameEngine {
         for (GameObject object : playerArray) {
             if (object != player) {
                 if (player.isTouching(object)) playerDeath = true;
-                if (player2.isTouching(object)) player2Death = true;
             }
+            if (player2.isTouching(object)) player2Death = true;
         }
         for (GameObject object : player2Array) {
             if (object != player2) {
-                if (player.isTouching(object)) playerDeath = true;
                 if (player2.isTouching(object)) player2Death = true;
             }
+            if (player.isTouching(object)) playerDeath = true;
         }
 
         if (player.outOfBounds()) {
