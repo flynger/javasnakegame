@@ -29,7 +29,7 @@ public class FrameEngine {
         panel.setLocation(710, 290);
         panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(new Color(255, 255, 255));
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, new Color(0, 220, 0)));
@@ -101,15 +101,18 @@ public class FrameEngine {
              lastInput = -1;
 
              for (GameObject object : playerArray) {
-                 if (object != player && player.isTouching(object)) {
-                     death = true;
-                 }
                  if (lastObjectSpeed.equals(new Vector(0, 0))) {
                      lastObjectSpeed = player.getSpeed();
                  }
                  Vector nextSpeed = object.getSpeed();
                  object.setSpeed(lastObjectSpeed);
                  lastObjectSpeed = nextSpeed;
+             }
+
+             for (GameObject object : playerArray) {
+                 if (object != player && player.isTouching(object)) {
+                     death = true;
+                 }
              }
 
              if (player.outOfBounds()) {
