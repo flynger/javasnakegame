@@ -11,32 +11,24 @@ import java.lang.*;
 import java.util.random.*;
 
 public class FrameEngine {
-    static Graphics2D g;
-    static int width = 500;
-    static int height = 500;
+    static JFrame panel;
+    static Graphics g;
+    static int cellSize = 20;
+    static int width = 25 * cellSize;
+    static int height = 25 * cellSize;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed = 2;
+    static int playerSpeed = cellSize / 10;
     static int lastInput;
     static boolean death;
     public static void main(String[] args) {
         // create a DrawingPanel object
 //        DrawingPanel panel = new DrawingPanel(width, height);
-        JFrame panel = new JFrame("Snake");
+        panel = new JFrame("Snake");
         panel.setSize(new Dimension(width + 16, height + 38));
         panel.setLocation(710, 290);
-        panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        panel.setBackground(new Color(255, 255, 255));
-
-        // creates player snake
-        playerArray.add(player = new GameObject(100, 200, 20, 20, new Color(0, 220, 0)));
-        playerArray.add(new GameObject(80, 200, 20, 20, Color.GREEN));
-        playerArray.add(new GameObject(60, 200, 20, 20, Color.GREEN));
-
-        objects.add(Apple.getApple());
-        objects.addAll(playerArray);
 
         // set up listeners
         KeyListener listener = new KeyListener() {
@@ -46,7 +38,7 @@ public class FrameEngine {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (lastInput == -1) {
+                if (!death && lastInput == -1) {
                     if (!player.equalsSpeed(new Vector(0, 0)) && e.getKeyCode() == KeyEvent.VK_W && !player.equalsSpeed(new Vector(0, playerSpeed))) {
                         lastInput = KeyEvent.VK_W;
                         // player.setSpeed(new Vector(0, -playerSpeed));
@@ -61,6 +53,9 @@ public class FrameEngine {
                         // player.setSpeed(new Vector(playerSpeed, 0));
                     }
                 }
+                else if (death && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    restartGame();
+                }
                 // System.out.println("keyPressed=" + KeyEvent.getKeyText(e.getKeyCode()));
             }
 
@@ -73,7 +68,17 @@ public class FrameEngine {
         panel.setVisible(true);
 
         // get the Graphics object from the DrawingPanel
-        g = (Graphics2D) panel.getGraphics();
+        g = panel.getGraphics();
+        g.setColor(new Color(238, 238, 238));
+        g.fillRect(9, 30, 500, 500);
+
+        // creates player snake
+        playerArray.add(player = new GameObject(100, 200, cellSize, cellSize, new Color(0, 220, 0)));
+        playerArray.add(new GameObject(80, 200, cellSize, cellSize, Color.GREEN));
+        playerArray.add(new GameObject(60, 200, cellSize, cellSize, Color.GREEN));
+
+        objects.add(Apple.getApple());
+        objects.addAll(playerArray);
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -81,6 +86,7 @@ public class FrameEngine {
     }
 
     public static void frame() {
+<<<<<<< Updated upstream
         // reset the background and stops the removal of "You Lose"
         //TODO: maybe find not jank way to fix this
         if(!death) {
@@ -137,15 +143,97 @@ public class FrameEngine {
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
             g.drawString("You Lose!", 150, 250);
         } else {
+=======
+        game:
+        if (!death) {
+            // update the player's speed
+            if (player.getX() % cellSize == 0 && player.getY() % cellSize == 0) {
+                Vector lastObjectSpeed = new Vector(0, 0);
+                if (lastInput == KeyEvent.VK_W) {
+                    lastObjectSpeed = new Vector(0, -playerSpeed);
+                } else if (lastInput == KeyEvent.VK_S) {
+                    lastObjectSpeed = new Vector(0, playerSpeed);
+                } else if (lastInput == KeyEvent.VK_A) {
+                    lastObjectSpeed = new Vector(-playerSpeed, 0);
+                } else if (lastInput == KeyEvent.VK_D) {
+                    lastObjectSpeed = new Vector(playerSpeed, 0);
+                }
+                lastInput = -1;
+
+                for (GameObject object : playerArray) {
+                    if (lastObjectSpeed.equals(new Vector(0, 0))) {
+                        lastObjectSpeed = player.getSpeed();
+                    }
+                    Vector nextSpeed = object.getSpeed();
+                    object.setSpeed(lastObjectSpeed);
+                    lastObjectSpeed = nextSpeed;
+                }
+                for (GameObject object : playerArray) {
+                    if (object != player && player.isTouching(object)) {
+                        death = true;
+                        break game;
+                    }
+                }
+
+                if (player.outOfBounds()) {
+                    death = true;
+                    break game;
+                }
+
+                // }
+                if (player.isTouching(Apple.getApple())) {
+                    GameObject newSnakeCell;
+                    playerArray.add(newSnakeCell = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), cellSize, cellSize, Color.GREEN));
+                    objects.add(newSnakeCell);
+                    Apple.getApple().randomizePosition();
+                }
+            }
+            // reset the background and stops the removal of "You Lose"
+            g.setColor(new Color(238, 238, 238));
+            GameObject lastSnakeCell = playerArray.get(playerArray.size() - 1);
+            int width = cellSize, height = cellSize, x = lastSnakeCell.getX(), y = playerArray.get(playerArray.size() - 1).getY();
+            if (lastSnakeCell.getSpeed().x != 0) {
+                width = playerSpeed;
+                if (lastSnakeCell.getSpeed().x < 0) {
+                    x = lastSnakeCell.getX() + cellSize - playerSpeed;
+                }
+            } else if (lastSnakeCell.getSpeed().y != 0) {
+                height = playerSpeed;
+                if (lastSnakeCell.getSpeed().y < 0) {
+                    y = lastSnakeCell.getY() + cellSize - playerSpeed;
+                }
+            }
+            g.fillRect(x + 8, y + 30, width, height);
+>>>>>>> Stashed changes
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
                 object.move(object.getSpeed());
                 g.fillRect(object.getX() + 8, object.getY() + 30, object.getWidth(), object.getHeight());
             }
-
-
         }
+        death:
+        if (death) {
+            g.setColor(Color.GREEN);
+            g.setFont(new Font("SansSerif", Font.BOLD, 36));
+            g.drawString("You Lose!", 150, 250);
+        }
+    }
+
+    public static void restartGame() {
+        objects.removeAll(playerArray);
+
+        g.setColor(new Color(238, 238, 238));
+        g.fillRect(9, 30, 500, 500);
+
+        playerArray = new ArrayList<>();
+        playerArray.add(player = new GameObject(100, 200, cellSize, cellSize, new Color(0, 220, 0)));
+        playerArray.add(new GameObject(80, 200, cellSize, cellSize, Color.GREEN));
+        playerArray.add(new GameObject(60, 200, cellSize, cellSize, Color.GREEN));
+
+        objects.addAll(playerArray);
+        Apple.getApple().setPos(380, 200);
+        death = false;
     }
 }
 
@@ -169,13 +257,6 @@ class Vector {
 class GameObject {
     private Vector pos, size, speed;
     private Color color;
-
-    public GameObject(int x, int y, int w, int h) {
-        this.pos = new Vector(x, y);
-        this.size = new Vector(w, h);
-        this.color = Color.BLACK;
-        this.speed = new Vector(0, 0);
-    }
 
     public GameObject(int x, int y, int w, int h, Color color) {
         this.pos = new Vector(x, y);
@@ -263,7 +344,7 @@ class GameObject {
     }
 
     public boolean isTouching(GameObject other) {
-        return this.pos.equals(other.getPos());
+        return this.getX() + this.getSpeed().x * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getX() + other.getSpeed().x * FrameEngine.cellSize / FrameEngine.playerSpeed && this.getY() + this.getSpeed().y * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getY() + other.getSpeed().y * FrameEngine.cellSize / FrameEngine.playerSpeed;
     }
 
     // public boolean isTouching(GameObject other) {
