@@ -78,14 +78,20 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 1000/120, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 50, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
-        g.setColor(Color.WHITE);
-        g.fillRect(playerArray.get(playerArray.size()-1).getPos().x + 8, playerArray.get(playerArray.size()-1).getPos().y + 30, 20, 20);
-
+        //TODO: maybe find not jank way to fix this
+        if(!death) {
+            g.setColor(Color.WHITE);
+            g.fillRect(playerArray.get(playerArray.size() - 1).getPos().x + 8, playerArray.get(playerArray.size() - 1).getPos().y + 30, 20, 20);
+        }
+        else {
+            g.setColor(playerArray.get(playerArray.size()-1).getColor());
+            g.fillRect(playerArray.get(playerArray.size()-1).getX() + 8, playerArray.get(playerArray.size()-1).getY() + 30, playerArray.get(playerArray.size()-1).getWidth(), playerArray.get(playerArray.size()-1).getHeight());
+        }
         // update the player's speed
          if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
              Vector lastObjectSpeed = new Vector(0, 0);
