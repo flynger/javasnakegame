@@ -16,6 +16,8 @@ public class FrameEngine {
     static int cellSize = 20;
     static int width = 25 * cellSize;
     static int height = 25 * cellSize;
+    static int xOffset = 8;
+    static int yOffset = 30;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
@@ -70,7 +72,7 @@ public class FrameEngine {
         // get the Graphics object from the DrawingPanel
         g = panel.getGraphics();
         g.setColor(new Color(238, 238, 238));
-        g.fillRect(9, 30, 500, 500);
+        g.fillRect(xOffset, yOffset, 500, 500);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, cellSize, cellSize, new Color(0, 220, 0)));
@@ -145,13 +147,13 @@ public class FrameEngine {
                 if (lastSnakeCell.getSpeed().y < 0) {
                     y = lastSnakeCell.getY() + cellSize - playerSpeed;
                 }
-                g.fillRect(x + 8, y + 30, width, height);
+                g.fillRect(x + xOffset, y + yOffset, width, height);
             }
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
                 object.move(object.getSpeed());
-                g.fillRect(object.getX() + 8, object.getY() + 30, object.getWidth(), object.getHeight());
+                g.fillRect(object.getX() + xOffset, object.getY() + yOffset, object.getWidth(), object.getHeight());
             }
         }
         death:
@@ -166,7 +168,7 @@ public class FrameEngine {
         objects.removeAll(playerArray);
 
         g.setColor(new Color(238, 238, 238));
-        g.fillRect(9, 30, 500, 500);
+        g.fillRect(xOffset, yOffset, 500, 500);
 
         playerArray = new ArrayList<>();
         playerArray.add(player = new GameObject(100, 200, cellSize, cellSize, new Color(0, 220, 0)));
