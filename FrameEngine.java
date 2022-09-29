@@ -13,7 +13,8 @@ import java.util.random.*;
 
 public class FrameEngine {
     static Graphics2D g;
-    static int width = 500, height = 500;
+    static int width = 500;
+    static int height = 500;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
@@ -30,7 +31,7 @@ public class FrameEngine {
 //        panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // creates player snake
-        playerArray.add(player = new GameObject(100, 200, 20, 20, Color.GREEN));
+        playerArray.add(player = new GameObject(100, 200, 20, 20, new Color(0, 220, 0)));
         playerArray.add(new GameObject(80, 200, 20, 20, Color.GREEN));
         playerArray.add(new GameObject(60, 200, 20, 20, Color.GREEN));
 
@@ -81,6 +82,9 @@ public class FrameEngine {
 
     public static void frame() {
         // reset the background and stops the removal of "You Lose"
+        g.setColor(Color.WHITE);
+        g.fillRect(playerArray.get(playerArray.size()-1).getPos().x, playerArray.get(playerArray.size()-1).getPos().y, 20, 20);
+
         // update the player's speed
          if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
              Vector lastObjectSpeed = new Vector(0, 0);
@@ -120,18 +124,10 @@ public class FrameEngine {
              }
          }
         if (death) {
+            g.setColor(Color.GREEN);
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
             g.drawString("You Lose!", 150, 250);
         } else {
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, width, height);
-//            g.setColor(Color.BLACK);
-//            for (int x = 0; x < 5; x++) {
-//                for (int y = 0; y < 5; y++) {
-//                    g.drawRect(x * 100, y * 100, 100, 100);
-//                }
-//            }
-
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
