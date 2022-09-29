@@ -29,6 +29,7 @@ public class FrameEngine {
         panel.setLocation(710, 290);
         panel.setVisible(true);
         panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        panel.setBackground(Color.WHITE);
 
         // creates player snake
         playerArray.add(player = new GameObject(100, 200, 20, 20, new Color(0, 220, 0)));
