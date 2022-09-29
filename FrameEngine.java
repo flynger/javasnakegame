@@ -9,7 +9,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.lang.*;
-import java.util.function.Function;
 import java.util.random.*;
 
 public class FrameEngine {
@@ -19,10 +18,10 @@ public class FrameEngine {
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
-    static int playerSpeed = 4;
+    static int playerSpeed = 2;
     static int lastInput;
     static boolean death;
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         // create a DrawingPanel object
 //        DrawingPanel panel = new DrawingPanel(width, height);
         JFrame panel = new JFrame("Snake");
@@ -77,12 +76,11 @@ public class FrameEngine {
         g = (Graphics2D) panel.getGraphics();
 
         // set up the frame loop
-//        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-//        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 20, TimeUnit.MILLISECONDS);
-        frame();
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 1000/120, TimeUnit.MILLISECONDS);
     }
 
-    public static void frame() throws InterruptedException {
+    public static void frame() {
         // reset the background and stops the removal of "You Lose"
         g.setColor(Color.WHITE);
         g.fillRect(playerArray.get(playerArray.size()-1).getPos().x, playerArray.get(playerArray.size()-1).getPos().y, 20, 20);
@@ -139,8 +137,6 @@ public class FrameEngine {
 
 
         }
-        Thread.sleep(15);
-        frame();
     }
 }
 
