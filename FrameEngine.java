@@ -327,7 +327,7 @@ class Apple extends GameObject {
         int i = 0;
         Vector randomPos = getRandomPos();
         while (i < FrameEngine.playerArray.size()) {
-            if (FrameEngine.playerArray.get(i).getPos().equals(randomPos)) {
+            if (FrameEngine.playerArray.get(i).getPos().equals(randomPos) || Apple.getApple().getPos().equals(randomPos)) {
                 randomPos = getRandomPos();
                 i = -1;
             }
