@@ -42,13 +42,13 @@ public class FrameEngine {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (!death && lastInput == -1) {
-                    if (e.getKeyCode() == KeyEvent.VK_W && player.getSpeed().x != 0) {
+                    if (e.getKeyCode() == KeyEvent.VK_W && player.getSpeed().getX() != 0) {
                         lastInput = KeyEvent.VK_W;
-                    } else if (e.getKeyCode() == KeyEvent.VK_S && player.getSpeed().x != 0) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_S && player.getSpeed().getX() != 0) {
                         lastInput = KeyEvent.VK_S;
-                    } else if (e.getKeyCode() == KeyEvent.VK_A && player.getSpeed().y != 0) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_A && player.getSpeed().getY() != 0) {
                         lastInput = KeyEvent.VK_A;
-                    } else if (e.getKeyCode() == KeyEvent.VK_D && (player.getSpeed().y != 0 || player.equalsSpeed(new Vector(0, 0)))) {
+                    } else if (e.getKeyCode() == KeyEvent.VK_D && (player.getSpeed().getY() != 0 || player.equalsSpeed(new Vector(0, 0)))) {
                         lastInput = KeyEvent.VK_D;
                     }
                 }
@@ -132,15 +132,15 @@ public class FrameEngine {
             g.setColor(new Color(238, 238, 238));
             GameObject lastSnakeCell = playerArray.get(playerArray.size() - 1);
             int width = cellSize, height = cellSize, x = lastSnakeCell.getX(), y = playerArray.get(playerArray.size() - 1).getY();
-            if (lastSnakeCell.getSpeed().x != 0) {
+            if (lastSnakeCell.getSpeed().getX() != 0) {
                 width = playerSpeed;
-                if (lastSnakeCell.getSpeed().x < 0) {
+                if (lastSnakeCell.getSpeed().getX() < 0) {
                     x = lastSnakeCell.getX() + cellSize - playerSpeed;
                 }
                 g.fillRect(x + 8, y + 30, width, height);
-            } else if (lastSnakeCell.getSpeed().y != 0) {
+            } else if (lastSnakeCell.getSpeed().getY() != 0) {
                 height = playerSpeed;
-                if (lastSnakeCell.getSpeed().y < 0) {
+                if (lastSnakeCell.getSpeed().getY() < 0) {
                     y = lastSnakeCell.getY() + cellSize - playerSpeed;
                 }
                 g.fillRect(x + xOffset, y + yOffset, width, height);
@@ -156,7 +156,7 @@ public class FrameEngine {
         if (death) {
             g.setColor(Color.GREEN);
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            g.drawString("You Lose!", 150, 250);
+            g.drawString("You Lose!", 150 + xOffset, 250 + yOffset);
         }
     }
 
@@ -178,10 +178,26 @@ public class FrameEngine {
 }
 
 class Vector {
-    public int x, y;
+    private int x, y;
 
     public Vector(int x, int y) {
         this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -206,11 +222,11 @@ class GameObject {
     }
 
     public int getX() {
-        return this.pos.x;
+        return this.pos.getX();
     }
 
     public int getY() {
-        return this.pos.y;
+        return this.pos.getY();
     }
 
     public Vector getPos() {
@@ -218,16 +234,16 @@ class GameObject {
     }
 
     public void setX(int x) {
-        this.pos.x = x;
+        this.pos.setX(x);
     }
 
     public void setY(int y) {
-        this.pos.y = y;
+        this.pos.setY(y);
     }
 
     public void setPos(int x, int y) {
-        this.pos.x = x;
-        this.pos.y = y;
+        this.pos.setX(x);
+        this.pos.setY(y);
     }
 
     public void setPos(Vector pos) {
@@ -235,24 +251,24 @@ class GameObject {
     }
 
     public int getWidth() {
-        return this.size.x;
+        return this.size.getX();
     }
 
     public int getHeight() {
-        return this.size.y;
+        return this.size.getY();
     }
 
     public void setWidth(int x) {
-        this.size.x = x;
+        this.size.setX(x);
     }
 
     public void setHeight(int y) {
-        this.size.y = y;
+        this.size.setY(y);
     }
 
     public void setSize(int x, int y) {
-        this.size.x = x;
-        this.size.y = y;
+        this.size.setX(x);
+        this.size.setY(y);
     }
 
     public Color getColor() {
@@ -264,11 +280,11 @@ class GameObject {
     }
 
     public void move(int x, int y) {
-        this.setPos(this.pos.x + x, this.pos.y + y);
+        this.setPos(this.pos.getX() + x, this.pos.getY() + y);
     }
 
     public void move(Vector amt) {
-        this.setPos(this.pos.x + amt.x, this.pos.y + amt.y);
+        this.setPos(this.pos.getX() + amt.getX(), this.pos.getY() + amt.getY());
     }
 
     public Vector getSpeed() {
@@ -284,7 +300,7 @@ class GameObject {
     }
 
     public boolean isTouching(GameObject other) {
-        return this.getX() + this.getSpeed().x * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getX() + other.getSpeed().x * FrameEngine.cellSize / FrameEngine.playerSpeed && this.getY() + this.getSpeed().y * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getY() + other.getSpeed().y * FrameEngine.cellSize / FrameEngine.playerSpeed;
+        return this.getX() + this.getSpeed().getX() * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getX() + other.getSpeed().getX() * FrameEngine.cellSize / FrameEngine.playerSpeed && this.getY() + this.getSpeed().getY() * FrameEngine.cellSize / FrameEngine.playerSpeed == other.getY() + other.getSpeed().getY() * FrameEngine.cellSize / FrameEngine.playerSpeed;
     }
 
     // public boolean isTouching(GameObject other) {
@@ -298,9 +314,9 @@ class GameObject {
     // }
 
     public boolean outOfBounds() {
-        if ((this.pos.x == FrameEngine.width - getWidth() && this.getSpeed().x > 0) || (this.pos.x == 0 && this.getSpeed().x < 0)) {
+        if ((this.pos.getX() == FrameEngine.width - getWidth() && this.getSpeed().getX() > 0) || (this.pos.getX() == 0 && this.getSpeed().getX() < 0)) {
             return true;
-        } else if ((this.pos.y == FrameEngine.height - getHeight() && this.getSpeed().y > 0) || (this.pos.y == 0 && this.getSpeed().y < 0)) {
+        } else if ((this.pos.getY() == FrameEngine.height - getHeight() && this.getSpeed().getY() > 0) || (this.pos.getY() == 0 && this.getSpeed().getY() < 0)) {
             return true;
         }
         return false;
