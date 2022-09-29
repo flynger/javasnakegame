@@ -78,7 +78,7 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 50, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 1000/120, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
