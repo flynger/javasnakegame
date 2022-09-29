@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import java.lang.*;
 import java.util.random.*;
 
+
 public class FrameEngine {
     static JFrame panel;
     static Graphics g;
@@ -130,22 +131,8 @@ public class FrameEngine {
                 }
             }
             // reset the background and stops the removal of "You Lose"
-            g.setColor(new Color(238, 238, 238));
-            GameObject lastSnakeCell = playerArray.get(playerArray.size() - 1);
-            int width = cellSize, height = cellSize, x = lastSnakeCell.getX(), y = playerArray.get(playerArray.size() - 1).getY();
-            if (lastSnakeCell.getSpeed().getX() != 0) {
-                width = playerSpeed;
-                if (lastSnakeCell.getSpeed().getX() < 0) {
-                    x = lastSnakeCell.getX() + cellSize - playerSpeed;
-                }
-                g.fillRect(x + 8, y + 30, width, height);
-            } else if (lastSnakeCell.getSpeed().getY() != 0) {
-                height = playerSpeed;
-                if (lastSnakeCell.getSpeed().getY() < 0) {
-                    y = lastSnakeCell.getY() + cellSize - playerSpeed;
-                }
-                g.fillRect(x + xOffset, y + yOffset, width, height);
-            }
+            playerArray.get(playerArray.size() - 1).eraseTail();
+
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
@@ -322,6 +309,24 @@ class GameObject {
             return true;
         }
         return false;
+    }
+
+    public void eraseTail() {
+        FrameEngine.g.setColor(new Color(238, 238, 238));
+        int width = FrameEngine.cellSize, height = FrameEngine.cellSize, x = this.getX(), y = this.getY();
+        if (this.getSpeed().getX() != 0) {
+            width = FrameEngine.playerSpeed;
+            if (this.getSpeed().getX() < 0) {
+                x = this.getX() + FrameEngine.cellSize - FrameEngine.playerSpeed;
+            }
+            FrameEngine.g.fillRect(x + 8, y + 30, width, height);
+        } else if (this.getSpeed().getY() != 0) {
+            height = FrameEngine.playerSpeed;
+            if (this.getSpeed().getY() < 0) {
+                y = this.getY() + FrameEngine.cellSize - FrameEngine.playerSpeed;
+            }
+            FrameEngine.g.fillRect(x + FrameEngine.xOffset, y + FrameEngine.yOffset, width, height);
+        }
     }
 }
 
