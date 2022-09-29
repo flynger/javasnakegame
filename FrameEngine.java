@@ -84,6 +84,7 @@ public class FrameEngine {
     }
 
     public static void frame() {
+        boolean justDied = false;
         game:
         if (!death) {
             // update the player's speed
@@ -110,13 +111,13 @@ public class FrameEngine {
                 }
                 for (GameObject object : playerArray) {
                     if (object != player && player.isTouching(object)) {
-                        death = true;
+                        justDied = true;
                         break game;
                     }
                 }
 
                 if (player.outOfBounds()) {
-                    death = true;
+                    justDied = true;
                     break game;
                 }
 
@@ -153,10 +154,11 @@ public class FrameEngine {
             }
         }
         death:
-        if (death) {
+        if (justDied) {
             g.setColor(Color.GREEN);
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
             g.drawString("You Lose!", 150 + xOffset, 250 + yOffset);
+            death = true;
         }
     }
 
