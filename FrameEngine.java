@@ -82,68 +82,10 @@ public class FrameEngine {
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 1000/120, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> frame(), 0, 10, TimeUnit.MILLISECONDS);
     }
 
     public static void frame() {
-<<<<<<< Updated upstream
-        // reset the background and stops the removal of "You Lose"
-        //TODO: maybe find not jank way to fix this
-        if(!death) {
-            g.setColor(Color.WHITE);
-            g.fillRect(playerArray.get(playerArray.size() - 1).getPos().x + 8, playerArray.get(playerArray.size() - 1).getPos().y + 30, 20, 20);
-        }
-        else {
-            g.setColor(playerArray.get(playerArray.size()-1).getColor());
-            g.fillRect(playerArray.get(playerArray.size()-1).getX() + 8, playerArray.get(playerArray.size()-1).getY() + 30, playerArray.get(playerArray.size()-1).getWidth(), playerArray.get(playerArray.size()-1).getHeight());
-        }
-        // update the player's speed
-         if (player.getX() % 20 == 0 && player.getY() % 20 == 0) {
-             Vector lastObjectSpeed = new Vector(0, 0);
-             if (lastInput == KeyEvent.VK_W) {
-                 lastObjectSpeed = new Vector(0, -playerSpeed);
-             } else if (lastInput == KeyEvent.VK_S) {
-                 lastObjectSpeed = new Vector(0, playerSpeed);
-             } else if (lastInput == KeyEvent.VK_A) {
-                 lastObjectSpeed = new Vector(-playerSpeed, 0);
-             } else if (lastInput == KeyEvent.VK_D) {
-                 lastObjectSpeed = new Vector(playerSpeed, 0);
-             }
-             lastInput = -1;
-
-             for (GameObject object : playerArray) {
-                 if (lastObjectSpeed.equals(new Vector(0, 0))) {
-                     lastObjectSpeed = player.getSpeed();
-                 }
-                 Vector nextSpeed = object.getSpeed();
-                 object.setSpeed(lastObjectSpeed);
-                 lastObjectSpeed = nextSpeed;
-             }
-
-             for (GameObject object : playerArray) {
-                 if (object != player && player.isTouching(object)) {
-                     death = true;
-                 }
-             }
-
-             if (player.outOfBounds()) {
-                 death = true;
-             }
-
-             // }
-             if (player.isTouching(Apple.getApple())) {
-                 GameObject box;
-                 playerArray.add(box = new GameObject(playerArray.get(playerArray.size() - 1).getX(), playerArray.get(playerArray.size() - 1).getY(), 20, 20, Color.GREEN));
-                 objects.add(box);
-                 Apple.getApple().randomizePosition();
-             }
-         }
-        if (death) {
-            g.setColor(Color.GREEN);
-            g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            g.drawString("You Lose!", 150, 250);
-        } else {
-=======
         game:
         if (!death) {
             // update the player's speed
@@ -204,7 +146,6 @@ public class FrameEngine {
                 }
             }
             g.fillRect(x + 8, y + 30, width, height);
->>>>>>> Stashed changes
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
