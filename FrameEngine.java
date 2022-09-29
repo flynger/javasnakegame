@@ -139,13 +139,14 @@ public class FrameEngine {
                 if (lastSnakeCell.getSpeed().x < 0) {
                     x = lastSnakeCell.getX() + cellSize - playerSpeed;
                 }
+                g.fillRect(x + 8, y + 30, width, height);
             } else if (lastSnakeCell.getSpeed().y != 0) {
                 height = playerSpeed;
                 if (lastSnakeCell.getSpeed().y < 0) {
                     y = lastSnakeCell.getY() + cellSize - playerSpeed;
                 }
+                g.fillRect(x + 8, y + 30, width, height);
             }
-            g.fillRect(x + 8, y + 30, width, height);
             // draw all the objects
             for (GameObject object : objects) {
                 g.setColor(object.getColor());
