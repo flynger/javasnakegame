@@ -20,11 +20,15 @@ public class FrameEngine {
     static final int xOffset = 8;
     static final int yOffset = 30;
     static ArrayList<GameObject> playerArray = new ArrayList<GameObject>();
+    static ArrayList<GameObject> player2Array = new ArrayList<GameObject>();
     static ArrayList<GameObject> objects = new ArrayList<GameObject>();
     static GameObject player;
+    static GameObject player2;
     static final int playerSpeed = cellSize / 10;
-    static int lastInput;
-    static boolean death;
+    static int lastPlayerInput;
+    static int lastPlayer2Input;
+    static boolean playerDeath;
+    static boolean player2Death;
     public static void main(String[] args) {
         // create a DrawingPanel object
 //        DrawingPanel panel = new DrawingPanel(width, height);
@@ -42,18 +46,34 @@ public class FrameEngine {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (!death && lastInput == -1) {
+                if (!playerDeath && lastPlayerInput == -1) {
                     if (e.getKeyCode() == KeyEvent.VK_W && player.getSpeed().getX() != 0) {
-                        lastInput = KeyEvent.VK_W;
+                        lastPlayerInput = KeyEvent.VK_W;
                     } else if (e.getKeyCode() == KeyEvent.VK_S && player.getSpeed().getX() != 0) {
-                        lastInput = KeyEvent.VK_S;
+                        lastPlayerInput = KeyEvent.VK_S;
                     } else if (e.getKeyCode() == KeyEvent.VK_A && player.getSpeed().getY() != 0) {
-                        lastInput = KeyEvent.VK_A;
+                        lastPlayerInput = KeyEvent.VK_A;
                     } else if (e.getKeyCode() == KeyEvent.VK_D && (player.getSpeed().getY() != 0 || player.equalsSpeed(new Vector(0, 0)))) {
-                        lastInput = KeyEvent.VK_D;
+                        lastPlayerInput = KeyEvent.VK_D;
+                        if (player.equalsSpeed(new Vector(0, 0))) {
+                            lastPlayer2Input = KeyEvent.VK_LEFT;
+                        }
+                    }
+                } if (!player2Death && lastPlayer2Input == -1) {
+                    if (e.getKeyCode() == KeyEvent.VK_UP && player2.getSpeed().getX() != 0) {
+                        lastPlayer2Input = KeyEvent.VK_UP;
+                    } else if (e.getKeyCode() == KeyEvent.VK_DOWN && player2.getSpeed().getX() != 0) {
+                        lastPlayer2Input = KeyEvent.VK_DOWN;
+                    } else if (e.getKeyCode() == KeyEvent.VK_LEFT && (player2.getSpeed().getY() != 0 || player2.equalsSpeed(new Vector(0, 0)))) {
+                        if (player2.equalsSpeed(new Vector(0, 0))) {
+                            lastPlayerInput = KeyEvent.VK_D;
+                        }
+                        lastPlayer2Input = KeyEvent.VK_LEFT;
+                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && player2.getSpeed().getY() != 0) {
+                        lastPlayer2Input = KeyEvent.VK_RIGHT;
                     }
                 }
-                else if (death && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if ((playerDeath || player2Death) && e.getKeyCode() == KeyEvent.VK_ENTER) {
                     restartGame();
                 }
             }
@@ -76,8 +96,15 @@ public class FrameEngine {
         playerArray.add(new GameObject(80, 200, cellSize, cellSize, Color.GREEN));
         playerArray.add(new GameObject(60, 200, cellSize, cellSize, Color.GREEN));
 
+        // creates player2 snake
+        player2Array.add(player2 = new GameObject(380, 200, cellSize, cellSize, new Color(0, 220, 220)));
+        player2Array.add(new GameObject(400, 200, cellSize, cellSize, Color.CYAN));
+        player2Array.add(new GameObject(420, 200, cellSize, cellSize, Color.CYAN));
+
+
         objects.add(Apple.getApple());
         objects.addAll(playerArray);
+        objects.addAll(player2Array);
 
         // set up the frame loop
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -85,23 +112,23 @@ public class FrameEngine {
     }
 
     public static void frame() {
-        boolean justDied = false;
+        int justDied = 0;
         game:
-        if (!death) {
+        if (!playerDeath && !player2Death) {
             // update the player's speed
             if (player.getX() % cellSize == 0 && player.getY() % cellSize == 0) {
+                // player 1
                 Vector lastObjectSpeed = new Vector(0, 0);
-                if (lastInput == KeyEvent.VK_W) {
+                if (lastPlayerInput == KeyEvent.VK_W) {
                     lastObjectSpeed = new Vector(0, -playerSpeed);
-                } else if (lastInput == KeyEvent.VK_S) {
+                } else if (lastPlayerInput == KeyEvent.VK_S) {
                     lastObjectSpeed = new Vector(0, playerSpeed);
-                } else if (lastInput == KeyEvent.VK_A) {
+                } else if (lastPlayerInput == KeyEvent.VK_A) {
                     lastObjectSpeed = new Vector(-playerSpeed, 0);
-                } else if (lastInput == KeyEvent.VK_D) {
+                } else if (lastPlayerInput == KeyEvent.VK_D) {
                     lastObjectSpeed = new Vector(playerSpeed, 0);
                 }
-                lastInput = -1;
-
+                lastPlayerInput = -1;
                 for (GameObject object : playerArray) {
                     if (lastObjectSpeed.equals(new Vector(0, 0))) {
                         lastObjectSpeed = player.getSpeed();
@@ -110,17 +137,71 @@ public class FrameEngine {
                     object.setSpeed(lastObjectSpeed);
                     lastObjectSpeed = nextSpeed;
                 }
+                // player 2
+                lastObjectSpeed = new Vector(0, 0);
+                if (lastPlayer2Input == KeyEvent.VK_UP) {
+                    lastObjectSpeed = new Vector(0, -playerSpeed);
+                } else if (lastPlayer2Input == KeyEvent.VK_DOWN) {
+                    lastObjectSpeed = new Vector(0, playerSpeed);
+                } else if (lastPlayer2Input == KeyEvent.VK_LEFT) {
+                    lastObjectSpeed = new Vector(-playerSpeed, 0);
+                } else if (lastPlayer2Input == KeyEvent.VK_RIGHT) {
+                    lastObjectSpeed = new Vector(playerSpeed, 0);
+                }
+                lastPlayer2Input = -1;
+
+                for (GameObject object : player2Array) {
+                    if (lastObjectSpeed.equals(new Vector(0, 0))) {
+                        lastObjectSpeed = player2.getSpeed();
+                    }
+                    Vector nextSpeed = object.getSpeed();
+                    object.setSpeed(lastObjectSpeed);
+                    lastObjectSpeed = nextSpeed;
+                }
                 for (GameObject object : playerArray) {
-                    if (object != player && player.isTouching(object)) {
-                        justDied = true;
-                        break game;
+                    if (object != player) {
+                        if (player.isTouching(object)) {
+                            justDied += 1;
+                        }
+                    }
+                    if (player2.isTouching(object)) {
+                        if (object == player) {
+                            if (player2.getSpeed().getX() * (player.getX() - player2.getX()) > 0) {
+                                justDied += 2;
+                            } else if (player2.getSpeed().getY() * (player.getY() - player2.getY()) > 0) {
+                                justDied += 2;
+                            }
+                        }
+                        else justDied += 2;
                     }
                 }
-
+                for (GameObject object : player2Array) {
+                    if (object != player2) {
+                        if (player2.isTouching(object)) {
+                            justDied += 2;
+                        }
+                    }
+                    if (player.isTouching(object)) {
+                        if (object == player2) {
+                            if (player.getSpeed().getX() * (player2.getX() - player.getX()) > 0) {
+                                justDied += 1;
+                            } else if (player.getSpeed().getY() * (player2.getY() - player.getY()) > 0) {
+                                justDied += 1;
+                            }
+                        }
+                        else justDied += 1;
+                    }
+                }
                 if (player.outOfBounds()) {
-                    justDied = true;
+                    justDied += 1;
+                }
+                if (player2.outOfBounds()) {
+                    justDied += 2;
+                }
+                if (justDied > 0) {
                     break game;
                 }
+
 
                 // }
                 if (player.isTouching(Apple.getApple())) {
@@ -129,9 +210,16 @@ public class FrameEngine {
                     objects.add(newSnakeCell);
                     Apple.getApple().randomizePosition();
                 }
+                if (player2.isTouching(Apple.getApple())) {
+                    GameObject newSnakeCell;
+                    player2Array.add(newSnakeCell = new GameObject(player2Array.get(player2Array.size() - 1).getX(), player2Array.get(player2Array.size() - 1).getY(), cellSize, cellSize, Color.CYAN));
+                    objects.add(newSnakeCell);
+                    Apple.getApple().randomizePosition();
+                }
             }
             // reset the background and stops the removal of "You Lose"
             playerArray.get(playerArray.size() - 1).eraseTail();
+            player2Array.get(player2Array.size() - 1).eraseTail();
 
             // draw all the objects
             for (GameObject object : objects) {
@@ -140,12 +228,23 @@ public class FrameEngine {
                 g.fillRect(object.getX() + xOffset, object.getY() + yOffset, object.getWidth(), object.getHeight());
             }
         }
-        death:
-        if (justDied) {
-            g.setColor(Color.GREEN);
+        playerDeath:
+        if (justDied > 0) {
+            String text = "Player " + (3 - justDied) + " won!";
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            g.drawString("You Lose!", 150 + xOffset, 250 + yOffset);
-            death = true;
+            if (justDied == 1) {
+                g.setColor(Color.GREEN);
+                playerDeath = true;
+            } else if(justDied == 2) {
+                g.setColor(Color.CYAN);
+                player2Death = true;
+            } else {
+                playerDeath = true;
+                player2Death = true;
+                g.setColor(Color.YELLOW);
+                text = "    Tie!";
+            }
+            g.drawString(text, 150 + xOffset, 250 + yOffset);
         }
     }
 
@@ -161,8 +260,8 @@ public class FrameEngine {
         playerArray.add(new GameObject(60, 200, cellSize, cellSize, Color.GREEN));
 
         objects.addAll(playerArray);
-        Apple.getApple().setPos(380, 200);
-        death = false;
+        Apple.getApple().setPos(240, 200);
+        playerDeath = false;
     }
 }
 
@@ -357,7 +456,7 @@ class Apple extends GameObject {
 
     public static Apple getApple() {
         if (single_instance == null)
-            single_instance = new Apple(380, 200, 20, 20);
+            single_instance = new Apple(240, 200, 20, 20);
 
         return single_instance;
     }
