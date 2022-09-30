@@ -167,7 +167,7 @@ public class FrameEngine {
                     if (player2.isTouching(object)) {
                         if (object == player) {
                             if (player2.getSpeed().getX() * (player.getX() - player2.getX()) > 0) {
-                                justDied += 2;
+                                 justDied += 2;
                             } else if (player2.getSpeed().getY() * (player.getY() - player2.getY()) > 0) {
                                 justDied += 2;
                             }
@@ -232,10 +232,10 @@ public class FrameEngine {
         if (justDied > 0) {
             String text = "Player " + (3 - justDied) + " won!";
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            if (justDied == 1) {
+            if (justDied == 2) {
                 g.setColor(Color.GREEN);
                 playerDeath = true;
-            } else if(justDied == 2) {
+            } else if(justDied == 1) {
                 g.setColor(Color.CYAN);
                 player2Death = true;
             } else {
