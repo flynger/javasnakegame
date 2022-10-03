@@ -101,7 +101,6 @@ public class FrameEngine {
         player2Array.add(new GameObject(400, 200, cellSize, cellSize, Color.CYAN));
         player2Array.add(new GameObject(420, 200, cellSize, cellSize, Color.CYAN));
 
-
         objects.add(Apple.getApple());
         objects.addAll(playerArray);
         objects.addAll(player2Array);
@@ -232,11 +231,11 @@ public class FrameEngine {
         if (justDied > 0) {
             String text = "Player " + (3 - justDied) + " won!";
             g.setFont(new Font("SansSerif", Font.BOLD, 36));
-            if (justDied == 2) {
-                g.setColor(Color.GREEN);
-                playerDeath = true;
-            } else if(justDied == 1) {
+            if (justDied == 1) {
                 g.setColor(Color.CYAN);
+                playerDeath = true;
+            } else if(justDied == 2) {
+                g.setColor(Color.GREEN);
                 player2Death = true;
             } else {
                 playerDeath = true;
