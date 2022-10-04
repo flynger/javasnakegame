@@ -437,18 +437,16 @@ class Apple extends GameObject {
     }
 
     public Vector getRandomPos() {
-        return new Vector((int) (Math.random()*(FrameEngine.width/getApple().getWidth())) * getApple().getWidth(), (int) (Math.random()*(FrameEngine.height/getApple().getHeight())) * getApple().getHeight());
+        return new Vector((int) (Math.random() * (FrameEngine.width / getApple().getWidth())) * getApple().getWidth(), (int) (Math.random() * (FrameEngine.height / getApple().getHeight())) * getApple().getHeight());
     }
 
     public void randomizePosition() {
-        int i = 0;
         Vector randomPos = getRandomPos();
-        while (i < FrameEngine.playerArray.size()) {
-            if (FrameEngine.playerArray.get(i).getPos().equals(randomPos) || Apple.getApple().getPos().equals(randomPos)) {
+        for(int i = 0; i < FrameEngine.objects.size(); i++) {
+            if (FrameEngine.objects.get(i).getPos().equals(randomPos)) {
                 randomPos = getRandomPos();
-                i = -1;
+                i = 0;
             }
-            i++;
         }
         super.setPos(randomPos);
     }
