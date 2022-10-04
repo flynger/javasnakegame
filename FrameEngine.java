@@ -266,6 +266,9 @@ public class FrameEngine {
         player2Array.add(new GameObject(400, 200, cellSize, cellSize, Color.CYAN));
         player2Array.add(new GameObject(420, 200, cellSize, cellSize, Color.CYAN));
 
+        lastPlayerInput = -1;
+        lastPlayer2Input = -1;
+
         objects.addAll(playerArray);
         objects.addAll(player2Array);
         Apple.getApple().setPos(240, 200);
