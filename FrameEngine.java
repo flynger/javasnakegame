@@ -249,18 +249,28 @@ public class FrameEngine {
 
     public static void restartGame() {
         objects.removeAll(playerArray);
+        objects.removeAll(player2Array);
 
         g.setColor(new Color(238, 238, 238));
         g.fillRect(xOffset, yOffset, 500, 500);
 
+        // recreates player snake
         playerArray = new ArrayList<>();
         playerArray.add(player = new GameObject(100, 200, cellSize, cellSize, new Color(0, 220, 0)));
         playerArray.add(new GameObject(80, 200, cellSize, cellSize, Color.GREEN));
         playerArray.add(new GameObject(60, 200, cellSize, cellSize, Color.GREEN));
 
+        // recreates player2 snake
+        player2Array = new ArrayList<>();
+        player2Array.add(player2 = new GameObject(380, 200, cellSize, cellSize, new Color(0, 220, 220)));
+        player2Array.add(new GameObject(400, 200, cellSize, cellSize, Color.CYAN));
+        player2Array.add(new GameObject(420, 200, cellSize, cellSize, Color.CYAN));
+
         objects.addAll(playerArray);
+        objects.addAll(player2Array);
         Apple.getApple().setPos(240, 200);
         playerDeath = false;
+        player2Death = false;
     }
 }
 
